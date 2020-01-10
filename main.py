@@ -35,17 +35,21 @@ def begin(update, context):
     
     jobs=[]
     for i in range(0,playerCount-1):
-        print(str(area[0])+" -> "+area[i+1])
-        jobs.append(str(area[0])+" -> "+area[i+1])
-    jobs.append("SPION!")
+        jobs.append("<b> 📍 Ort: </b>\n   "+str(area[0])+"\n\n<b>💼 Beruf:</b>\n   "+area[i+1])
+        
+    jobs.append("<b> 📍 Ort: </b>\n   "+"<i>Unbekannt</i>"+"\n\n<b>💼 Beruf:</b>\n   🕵️ Spion")
     rdm.shuffle(jobs)
 
     for idx, val in enumerate(usrData[1]):
-        print(idx)
-        context.bot.sendMessage(val, jobs[idx])
+        bot.sendMessage(val, jobs[idx],isHTML=True)
+
+def delgroup(update, context):
+    bot.removeUser(bot.chatID(update))
 
 bot.addBotCommand("start", start)
 bot.addBotCommand("newgroup", newgroup)
 bot.addBotCommand("join", join)
 bot.addBotCommand("begin", begin)
+bot.addBotCommand("delgroup", delgroup)
+
 bot.startBot()
