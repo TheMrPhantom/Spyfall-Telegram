@@ -34,8 +34,11 @@ def begin(update, context):
     area=config.areas[areaIdx]
     
     jobs=[]
+    jobIdx=list(range(1,len(area)))
+    rdm.shuffle(jobIdx)
+    
     for i in range(0,playerCount-1):
-        jobs.append("<b> 📍 Ort: </b>\n   "+str(area[0])+"\n\n<b>💼 Beruf:</b>\n   "+area[i+1])
+        jobs.append("<b> 📍 Ort: </b>\n   "+str(area[0])+"\n\n<b>💼 Beruf:</b>\n   "+area[jobIdx.pop(0)])
         
     jobs.append("<b> 📍 Ort: </b>\n   "+"<i>Unbekannt</i>"+"\n\n<b>💼 Beruf:</b>\n   🕵️ Spion")
     rdm.shuffle(jobs)
