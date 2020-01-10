@@ -46,10 +46,17 @@ def begin(update, context):
 def delgroup(update, context):
     bot.removeUser(bot.chatID(update))
 
+def locations(update, context):
+    locationMsg="<b> 📍 Orte: </b>\n"
+    for idx,loc in enumerate(config.areas):
+        locationMsg+=str(idx+1)+": "+loc[0]+"\n"
+    bot.sendMessage(bot.chatID(update), locationMsg,isHTML=True)
+
 bot.addBotCommand("start", start)
 bot.addBotCommand("newgroup", newgroup)
 bot.addBotCommand("join", join)
 bot.addBotCommand("begin", begin)
 bot.addBotCommand("delgroup", delgroup)
+bot.addBotCommand("locations", locations)
 
 bot.startBot()
