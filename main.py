@@ -46,7 +46,7 @@ def begin(update, context):
     reply_markup = ReplyKeyboardMarkup([["3","4"],["5","6"],["7","8"]])
     bot.sendMessage(bot.chatID(update), "How many players are you? (1-8)",rpl_markup=reply_markup)
 
-    chatState = usrData[2]["chat_state"] = 1
+    usrData[2]["chat_state"] = 1
     bot.modifyUser(bot.chatID(update), usrData)
 
 
@@ -193,7 +193,7 @@ def menu_actions(update, context):
     inp = str(update.callback_query.data).split("#")
     
     chat = inp[len(inp)-1]
-    rawData = update.callback_query.data
+    
     nextData=inp[0]
     inp.pop(0)
 
