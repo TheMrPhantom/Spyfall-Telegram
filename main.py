@@ -11,7 +11,7 @@ from telegram.ext.filters import Filters
 from telegram.ext import CallbackQueryHandler
 
 startMessage="Welcome,\nType /newgroup _<name>_ for a new game.\nTo join an existing game type /join _<name>_.\nAfter creating a game you can start it by typing /begin   "
-notLeaderMessage="You are not leader of a group yet.\n Type /start for help"
+notLeaderMessage="You are not leader of a group yet.\nType /start for help"
 
 def start(update, context):
     bot.sendMessage(bot.chatID(update), startMessage)
