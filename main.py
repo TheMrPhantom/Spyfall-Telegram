@@ -43,8 +43,9 @@ def begin(update, context):
         context.bot.sendMessage(bot.chatID(
             update), "You are not leader of a group yet")
         return
-    reply_markup = ReplyKeyboardMarkup([["3","4"],["5","6"],["7","8"]])
-    bot.sendMessage(bot.chatID(update), "How many players are you? (1-8)",rpl_markup=reply_markup)
+    reply_markup = ReplyKeyboardMarkup([["3", "4"], ["5", "6"], ["7", "8"]])
+    bot.sendMessage(bot.chatID(update),
+                    "How many players are you? (1-8)", rpl_markup=reply_markup)
 
     usrData[2]["chat_state"] = 1
     bot.modifyUser(bot.chatID(update), usrData)
@@ -101,6 +102,18 @@ def default(update, context):
 
         elif chatState == 2:
             try:
+                #areaIdx = rdm.randint(0, len(config.areas)-1)
+                areaIn = update.message.text
+                possibleAreas = []
+
+                if areaIn == "None":
+                    areaIn = None
+                for idx, val in enumerate(config.areas):
+                    category = val[8]['category']
+
+                    if category == areaIn:
+                        possibleAreas.append(idx)
+
                 reply_markup = ReplyKeyboardRemove()
                 context.bot.send_message(chat_id=bot.chatID(
                     update), text="Started game", reply_markup=reply_markup)
@@ -111,10 +124,11 @@ def default(update, context):
                 playerNotOnPhone = playerInStore-1
                 playerOnPhone = playerNotRegistered+1
 
-                areaIdx = rdm.randint(0, len(config.areas)-1)
+                areaIdx = rdm.randint(0, len(possibleAreas)-1)
 
-                area = config.areas[areaIdx]
-
+                area = possibleAreas[areaIdx]
+                area = config.areas[area]
+                areaIdx = possibleAreas[areaIdx]
                 jobs = []
                 jobIdx = list(range(1, len(area)-1))
                 rdm.shuffle(jobIdx)
@@ -133,39 +147,40 @@ def default(update, context):
                         bot.sendMessage(val, jobs[idx], isHTML=True)
                 else:
                     rdm.shuffle(jobIdx)
-                    for i in range(0,7-playerInMessage+1):
+                    for i in range(0, 7-playerInMessage+1):
                         jobIdx.pop(0)
-                    
+
                     jobIdx.append("!")
                     rdm.shuffle(jobIdx)
-                    
-                    jobIdxPhone=[]
-                    jobIdxOther=[]
-                    
+
+                    jobIdxPhone = []
+                    jobIdxOther = []
+
                     for i in range(0, playerOnPhone):
                         jobIdxPhone.append(jobIdx[0])
                         jobIdx.pop(0)
-                    
+
                     for i in range(0, playerNotOnPhone):
                         jobIdxOther.append(jobIdx[0])
                         jobIdx.pop(0)
 
                     for i, chatID in enumerate(usrData[1]):
-                        if i ==0:
+                        if i == 0:
                             continue
-                        idx=jobIdxOther[i-1]
+                        idx = jobIdxOther[i-1]
                         if idx == "!":
                             bot.sendMessage(chatID, "<b> 📍 Ort: </b>\n   "+"<i>Unbekannt</i>" +
                                             "\n\n<b>💼 Beruf:</b>\n   🕵️ Spion", isHTML=True)
                         else:
-                            bot.sendMessage(chatID, "<b> 📍 Ort: </b>\n   "+"<i>"+area[0]+"</i>"+"\n\n<b>💼 Beruf:</b>\n   "+area[idx], isHTML=True)
-                
+                            bot.sendMessage(chatID, "<b> 📍 Ort: </b>\n   "+"<i>" +
+                                            area[0]+"</i>"+"\n\n<b>💼 Beruf:</b>\n   "+area[idx], isHTML=True)
+
                     callback = ""
 
                     for i in jobIdxPhone:
                         callback += str(areaIdx)+","+str(i)+"#X#"
 
-                    callback+=str(bot.chatID(update))
+                    callback += str(bot.chatID(update))
 
                     button_list = [
                         InlineKeyboardButton("Next", callback_data=callback)
@@ -191,24 +206,24 @@ def menu_actions(update, context):
         print(e)
 
     inp = str(update.callback_query.data).split("#")
-    
+
     chat = inp[len(inp)-1]
-    
-    nextData=inp[0]
+
+    nextData = inp[0]
     inp.pop(0)
 
     next = ""
     for a in inp:
         next += a+"#"
-    next=next[:len(next)-1]
+    next = next[:len(next)-1]
 
-    if nextData=='X':
+    if nextData == 'X':
         button_list = [InlineKeyboardButton("Next", callback_data=next)]
         reply_markup = InlineKeyboardMarkup(
             bot.build_menu(button_list, n_cols=1))
-        bot.sendMessage(str(chat), "Give the phone to the next player", isHTML=True, rpl_markup=reply_markup)
+        bot.sendMessage(str(chat), "Give the phone to the next player",
+                        isHTML=True, rpl_markup=reply_markup)
         return
-    
 
     reply_markup = None
 
@@ -216,8 +231,8 @@ def menu_actions(update, context):
         loc = nextData.split(",")[0]
         job = nextData.split(",")[1]
 
-        reply_markup=None
-        
+        reply_markup = None
+
         if len(inp) > 2:
             button_list = [InlineKeyboardButton("Next", callback_data=next)]
             reply_markup = InlineKeyboardMarkup(
@@ -229,7 +244,6 @@ def menu_actions(update, context):
         else:
             bot.sendMessage(str(chat), "<b> 📍 Ort: </b>\n   "+"<i>"+str(config.areas[int(loc)][0])+"</i>"+"\n\n<b>💼 Beruf:</b>\n   "+str(
                 config.areas[int(loc)][int(job)]), isHTML=True, rpl_markup=reply_markup)
-
 
 
 def buttonTest(update, context):
