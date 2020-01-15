@@ -10,11 +10,10 @@ from telegram import ReplyKeyboardRemove
 from telegram.ext.filters import Filters
 from telegram.ext import CallbackQueryHandler
 
+startMessage="Welcome,\nType /newgroup _<name>_ for a new game.\nTo join an existing game type /join _<name>_.\nAfter creating a game you can start it by typing /begin   "
 
 def start(update, context):
-    message = "Welcome,\n"
-    message += "Type /newgroup for a new game"
-    context.bot.sendMessage(bot.chatID(update), message)
+    bot.sendMessage(bot.chatID(update), startMessage)
 
 
 def newgroup(update, context):
